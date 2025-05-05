@@ -3,11 +3,13 @@ package com.myblog.dao;
 import com.myblog.model.Post;
 import com.myblog.model.Tag;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Repository
 public class PostDaoImpl implements PostDao {
     private final JdbcTemplate jdbcTemplate;
 
@@ -31,8 +33,8 @@ public class PostDaoImpl implements PostDao {
     @Override
     public Post findById(Long id) {
         String sql = "SELECT p.*, t.id AS tag_id, t.name AS tag_name FROM posts p " +
-                "LEFT JOIN post_tags pt ON p.id = ps.post_id " +
-                "LEFT JOIN tags t ON pt.tag_id = t,id WHERE p.id = ?";
+                "LEFT JOIN post_tags pt ON p.id = pt.post_id " +
+                "LEFT JOIN tags t ON pt.tag_id = t.id WHERE p.id = ?";
         List<Post> posts = jdbcTemplate.query(sql, new Object[]{id}, this::mapRowToPost);
 
         return posts.isEmpty() ? null : posts.get(0);

@@ -17,9 +17,9 @@ public class PostController {
 
     @GetMapping
     public String getPosts(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String tag,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "tag", required = false) String tag,
             Model model
     ) {
         model.addAttribute("posts", postService.getPosts(page, size, tag));
@@ -32,7 +32,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String getPost(@PathVariable Long id, Model model) {
+    public String getPost(@PathVariable(name = "id") Long id, Model model) {
         Post post = postService.getPostById(id);
 
         if (post == null) {
@@ -56,14 +56,14 @@ public class PostController {
         return "redirect:/posts";
     }
 
-    @PostMapping("{id}/like")
-    public String likePost(@PathVariable Long id) {
+    @PostMapping("/{id}/like")
+    public String likePost(@PathVariable(name = "id") Long id) {
         postService.likePost(id);
-        return "redirect:/posts" + id;
+        return "redirect:/posts/" + id;
     }
 
-    @PostMapping("posts/{id}/delete")
-    public String deletePost(@PathVariable Long id){
+    @PostMapping("/{id}/delete")
+    public String deletePost(@PathVariable(name = "id") Long id){
         postService.deletePost(id);
         return "redirect:/posts";
     }

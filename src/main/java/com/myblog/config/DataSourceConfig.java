@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
@@ -26,6 +27,7 @@ public class DataSourceConfig {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
@@ -34,12 +36,18 @@ public class DataSourceConfig {
 
     @Bean
     public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("classpath:schema.sql"));
+        //ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        //populator.addScript(new ClassPathResource("classpath:/schema.sql"));
         DataSourceInitializer initializer = new DataSourceInitializer();
         initializer.setDataSource(dataSource);
-        initializer.setDatabasePopulator(populator);
+        initializer.setEnabled(false);
+        //initializer.setDatabasePopulator(populator);
         return initializer;
 
+    }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 }

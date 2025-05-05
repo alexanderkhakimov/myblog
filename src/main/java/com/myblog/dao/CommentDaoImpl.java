@@ -2,11 +2,13 @@ package com.myblog.dao;
 
 import com.myblog.model.Comment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Repository
 public class CommentDaoImpl implements CommentDao {
     private final JdbcTemplate jdbcTemplate;
 

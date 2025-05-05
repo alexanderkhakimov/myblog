@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Posts</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+<h1>Blog Posts</h1>
+<a th:href="@{/posts/add}">Add Post</a>
+<form th:action="@{/posts}" method="get">
+    <label for="tag">Filter by Tag:</label>
+    <input type="text" id="tag" name="tag" th:value="${tag}">
+    <button type="submit">Filter</button>
+</form>
+<div th:each="post : ${posts}">
+    <h2><a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}"></a></h2>
+    <img th:src="${post.imageUrl}" alt="Post Image" width="100">
+    <p th:text="${#strings.abbreviate(post.content, 100)}"></p>
+    <p>Likes: <span th:text="${post.likes}"></span></p>
+    <p>Comments: <span th:text="${post.getComments().size()}"></span></p>
+    <p>Tags: <span th:each="tag : ${post.tags}" th:text="${tag.name} + ' '"></span></p>
+</div>
+<div>
+    <a th:href="@{/posts(page=${currentPage - 1}, size=${pageSize}, tag=${tag})}" th:if="${currentPage > 1}">Previous</a>
+    <a th:href="@{/posts(page=${currentPage + 1}, size=${pageSize}, tag=${tag})}">Next</a>
+    <form th:action="@{/posts}" method="get" style="display:inline;">
+        <input type="hidden" name="page" value="1">
+        <input type="hidden" name="tag" th:value="${tag}">
+        <select name="size" onchange="this.form.submit()">
+            <option value="10" th:selected="${pageSize == 10}">10</option>
+            <option value="20" th:selected="${pageSize == 20}">20</option>
+            <option value="50" th:selected="${pageSize == 50}">50</option>
+        </select>
+    </form>
+</div>
+</body>
+</html>

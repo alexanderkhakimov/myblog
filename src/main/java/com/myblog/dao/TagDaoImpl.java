@@ -2,11 +2,13 @@ package com.myblog.dao;
 
 import com.myblog.model.Tag;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Repository
 public class TagDaoImpl implements TagDao {
     private final JdbcTemplate jdbcTemplate;
 
