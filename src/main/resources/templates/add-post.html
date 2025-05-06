@@ -2,21 +2,46 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Post</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>>Витрина товаров</title>
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}">
 </head>
 <body>
-<h1>Add Post</h1>
-<form th:action="@{/posts}" method="post" th:object="${post}">
-    <label for="title">Title:</label>
-    <input type="text" id="title" th:field="*{title}" required>
-    <label for="imageUrl">Image URL:</label>
-    <input type="text" id="imageUrl" th:field="*{imageUrl}">
-    <label for="content">Content:</label>
-    <textarea id="content" th:field="*{content}" required></textarea>
-    <label for="tags">Tags (comma-separated):</label>
-    <input type="text" id="tags" name="tags">
-    <button type="submit">Save</button>
+<a th:href="@{/posts}" style="float:right;">
+    <b>НА ГЛАВНУЮ ⤵</b>
+</a>
+<div th:if="${error}" th:text="${error}" style="color: red; text-align: center;"></div>
+<form method="POST" th:action="@{/posts}" enctype="multipart/form-data">
+    <table style="width:50%;margin-left:auto;margin-right:auto;">
+        <tr>
+            <td>
+                <h3>Название</h3>
+                <textarea rows="2" style="width: 100%;" name="title"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Изображение</h3>
+                <input type="file" name="image">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Теги</h3>
+                <textarea rows="2" style="width: 100%;" name="tags"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Текст</h3>
+                <textarea rows="30" style="width: 100%;" name="text"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button style="float:right;" th:text="'Сохранить'"></button>
+            </td>
+        </tr>
+    </table>
 </form>
 </body>
 </html>

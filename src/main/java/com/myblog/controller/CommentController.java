@@ -3,10 +3,7 @@ package com.myblog.controller;
 import com.myblog.model.Comment;
 import com.myblog.service.CommentService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/comments")
@@ -18,9 +15,15 @@ public class CommentController {
     }
 
     @PostMapping
-    public String addComment(@ModelAttribute Comment comment) {
+    public String addComment(@RequestParam("postId") Long postId, @RequestParam("text") String text) {
+        if(text==null || text.trim().isEmpty()){
+            return "redirect:/posts/"+postId + "?error=Comment content cannot be empty";
+        }
+        Comment comment = new Comment();
+        comment.setPostId(postId);
+        comment.setContent(text.trim());
         commentService.saveComment(comment);
-        return "redirect:/posts/" + comment.getPostId();
+        return "redirect:/posts/" + postId;
     }
 
     @PostMapping("/{id}")

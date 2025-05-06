@@ -2,37 +2,60 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Blog Posts</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>Витрина товаров</title>
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}">
 </head>
 <body>
-<h1>Blog Posts</h1>
-<a th:href="@{/posts/add}">Add Post</a>
-<form th:action="@{/posts}" method="get">
-    <label for="tag">Filter by Tag:</label>
-    <input type="text" id="tag" name="tag" th:value="${tag}">
-    <button type="submit">Filter</button>
+<form method="GET" th:action ="@{/posts/add}">
+    <button style="float:right;">ДОБАВИТЬ ПОСТ</button>
 </form>
-<div th:each="post : ${posts}">
-    <h2><a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}"></a></h2>
-    <img th:src="${post.imageUrl}" alt="Post Image" width="100">
-    <p th:text="${#strings.abbreviate(post.content, 100)}"></p>
-    <p>Likes: <span th:text="${post.likes}"></span></p>
-    <p>Comments: <span th:text="${post.getComments().size()}"></span></p>
-    <p>Tags: <span th:each="tag : ${post.tags}" th:text="${tag.name} + ' '"></span></p>
-</div>
-<div>
-    <a th:href="@{/posts(page=${currentPage - 1}, size=${pageSize}, tag=${tag})}" th:if="${currentPage > 1}">Previous</a>
-    <a th:href="@{/posts(page=${currentPage + 1}, size=${pageSize}, tag=${tag})}">Next</a>
-    <form th:action="@{/posts}" method="get" style="display:inline;">
-        <input type="hidden" name="page" value="1">
-        <input type="hidden" name="tag" th:value="${tag}">
-        <select name="size" onchange="this.form.submit()">
-            <option value="10" th:selected="${pageSize == 10}">10</option>
-            <option value="20" th:selected="${pageSize == 20}">20</option>
-            <option value="50" th:selected="${pageSize == 50}">50</option>
-        </select>
-    </form>
-</div>
+
+<table style="width:50%;margin-left:auto;margin-right:auto;">
+    <tr>
+        <td>
+            <form method="GET" th:action="@{/posts}">
+                <p>
+                    <label for="search">Найти по тегу: </label>
+                    <input id="search" style="width:300px;" name="tag" th:value="${tag} ?: ''">
+                    <button name="action">🔍</button>
+                </p>
+                <p>
+                    <label for="pageSize">Число постов: </label>
+                    <select id="pageSize" name="size" onchange="this.form.submit()">
+                        <option value="5" th:selected="${pageSize == 5}">5</option>
+                        <option value="10" th:selected="${pageSize == 10}">10</option>
+                        <option value="20" th:selected="${pageSize == 20}">20</option>
+                        <option value="50" th:selected="${pageSize == 50}">50</option>
+                        <option value="100" th:selected="${pageSize == 100}">100</option>
+                    </select>
+                </p>
+                <p>
+                    <button th:if="${currentPage > 1}" name="page" th:value="${currentPage - 1}"><</button>
+                    <span th:text="${currentPage}"></span>
+                    <button th:if="${posts.size() == pageSize}" name="page" th:value="${currentPage + 1}">></button>
+                </p>
+            </form>
+        </td>
+    </tr>
+    <tr th:each="post : ${posts}">
+        <td style="border-bottom:thin solid;">
+            <h2 th:text="${post.title}"></h2>
+            <p>
+                <a th:href="@{/posts/{id}(id=${post.id})}">
+                    <img height="300" th:src="@{${post.imageUrl} ?: '/static/images/placeholder.jpg'}">
+                </a>
+            </p>
+            <p th:text="${#strings.abbreviate(post.content, 200)}"></p>
+            <p>
+                <span th:text="'Лайков: ' + ${post.likes}"></span>
+                <span th:text="' Комментариев: ' + ${post.getComments().size()}"></span>
+            </p>
+            <p>
+                <span th:each="tag : ${post.tags}" th:text="${tag.name} + ' '"></span>
+            </p>
+        </td>
+    </tr>
+</table>
+
 </body>
 </html>

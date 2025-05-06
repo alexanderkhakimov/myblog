@@ -2,10 +2,13 @@ package com.myblog.dao;
 
 import com.myblog.model.Tag;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -27,8 +30,13 @@ public class TagDaoImpl implements TagDao {
     @Override
     public void save(Tag tag) {
         String sql = "INSERT INTO tags (name) VALUES (?)";
-        jdbcTemplate.update(sql, tag.getName());
-        Long id = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, tag.getName());
+            return ps;
+        }, keyHolder);
+        Long id = keyHolder.getKey().longValue();
         tag.setId(id);
 
     }

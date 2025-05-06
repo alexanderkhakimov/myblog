@@ -47,9 +47,9 @@ public class CommentDaoImpl implements CommentDao {
     private Comment mapRowToComment(ResultSet resultSet, int rowNum) throws SQLException {
         Comment comment = new Comment();
         comment.setId(resultSet.getLong("id"));
-        comment.setPostId(resultSet.getLong("postId"));
+        comment.setPostId(resultSet.getLong("post_id"));
         comment.setContent(resultSet.getString("content"));
-        comment.setCreatedAt(resultSet.getTimestamp("createdAt").toLocalDateTime());
+        comment.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
 
         return comment;
     }
