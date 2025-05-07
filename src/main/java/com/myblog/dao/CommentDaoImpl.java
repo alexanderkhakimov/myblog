@@ -21,6 +21,12 @@ public class CommentDaoImpl implements CommentDao {
         String sql = "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC";
         return jdbcTemplate.query(sql, new Object[]{postId}, this::mapRowToComment);
     }
+    @Override
+    public Comment findById(Long id) {
+        String sql = "SELECT * FROM comments WHERE id = ?";
+        List<Comment> comments = jdbcTemplate.query(sql, new Object[]{id}, this::mapRowToComment);
+        return comments.isEmpty() ? null : comments.get(0);
+    }
 
 
     @Override

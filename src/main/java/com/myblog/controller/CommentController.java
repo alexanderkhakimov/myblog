@@ -16,8 +16,8 @@ public class CommentController {
 
     @PostMapping
     public String addComment(@RequestParam("postId") Long postId, @RequestParam("text") String text) {
-        if(text==null || text.trim().isEmpty()){
-            return "redirect:/posts/"+postId + "?error=Comment content cannot be empty";
+        if (text == null || text.trim().isEmpty()) {
+            return "redirect:/posts/" + postId + "?error=Comment content cannot be empty";
         }
         Comment comment = new Comment();
         comment.setPostId(postId);
@@ -26,20 +26,29 @@ public class CommentController {
         return "redirect:/posts/" + postId;
     }
 
-    @PostMapping("/{id}")
-    public String updateComment(@PathVariable Long id, @ModelAttribute Comment comment) {
-        comment.setId(id);
+    @PostMapping("/{id}/edit")
+    public String updateComment(@PathVariable(name = "id") Long id, @RequestParam("text") String text) {
+        if (text == null || text.trim().isEmpty()) {
+            Comment comment = commentService.getCommentById(id);
+            if (comment == null) {
+                return "redirect:/posts?error=Comment not found";
+            }
+            return "redirect:/posts/" + comment.getPostId() + "?error=Comment content cannot be empty";
+        }
+        Comment comment = commentService.getCommentById(id);
+        if (comment == null) {
+            return "redirect:/posts?error=Comment not found";
+        }
+        comment.setContent(text.trim());
         commentService.updateComment(comment);
-
         return "redirect:/posts/" + comment.getPostId();
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteComment(@PathVariable Long id) {
-        Comment comment = (Comment) commentService.getCommentById(id);
+    public String deleteComment(@PathVariable(name = "id") Long id, @RequestParam(name = "postId") Long postId) {
         commentService.deleteComment(id);
 
-        return "redirect:/posts/" + comment.getPostId();
+        return "redirect:/posts/" + postId;
 
     }
 }

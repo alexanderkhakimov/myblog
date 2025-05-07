@@ -13,5 +13,6 @@ public interface PostDao {
     void update(Post post);
     void delete(Long id);
     void incrementLikes(Long id);
+    void decrementLikes(Long id);
 
 }

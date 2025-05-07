@@ -15,8 +15,12 @@ public class CommentService {
         this.commentDao = commentDao;
     }
 
-    public List<Comment> getCommentById(Long postId) {
+    public List<Comment> getCommentByPostId(Long postId) {
         return commentDao.findByPostId(postId);
+    }
+
+    public Comment getCommentById(Long id) {
+        return commentDao.findById(id);
     }
 
     public void saveComment(Comment comment) {

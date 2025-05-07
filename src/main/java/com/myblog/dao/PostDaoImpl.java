@@ -129,6 +129,10 @@ public class PostDaoImpl implements PostDao {
     public void incrementLikes(Long id) {
         jdbcTemplate.update("UPDATE posts SET likes = likes + 1 WHERE id = ?", id);
     }
+    @Override
+    public void decrementLikes(Long id) {
+        jdbcTemplate.update("UPDATE posts SET likes = likes - 1 WHERE id = ?", id);
+    }
 
     private Post mapRowToPost(ResultSet resultSet, int rowNum) throws SQLException {
         Post post = new Post();

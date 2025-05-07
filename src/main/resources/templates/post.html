@@ -46,7 +46,7 @@
 </head>
 <body>
 <!-- Ссылка на главную страницу -->
-<a href="@{/posts}}" style="float:right;">
+<a th:href="@{/posts}" style="float:right;">
     <b>НА ГЛАВНУЮ ⤵</b>
 </a>
 <table style="width:50%;margin-left:auto;margin-right:auto;">
@@ -75,21 +75,17 @@
             <p>
                 <!-- Форма для лайков -->
             <form th:action="@{/posts/{id}/like(id=${post.id})}" method="post">
-                <button name="like" value="true">👍</button>
+                <button type="submit" name="like" value="true">👍</button>
                 <span th:text="${post.likes}"></span>
-                <button name="like" value="false">👎</button>
+                <button type="submit" name="like" value="false">👎</button>
                 <span th:text="${'комментарии ' + post.comments.size()}" style="float:right;"></span>
             </form>
             </p>
             <p>
                 <!-- Теги поста -->
-                <span th:each="tag : ${post.tags}" th:text="${tag.name} + ' '"></span>
+                <span th:each="tag : ${post.tags}" th:text="'#'+${tag.name} + ' '"></span>
             </p>
         </td>
-    </tr>
-    <!-- Отладка содержимого поста -->
-    <tr>
-        <td>Debug: Content = <span th:text="${post.content} ?: 'No content'"></span></td>
     </tr>
     <!-- Абзацы текста поста -->
     <tr th:each="paragraph : ${#strings.arraySplit(post.content != null ? post.content : '', '\n')}">
@@ -99,8 +95,6 @@
         <td>
             <hr>
             <h2>Комментарии</h2>
-            <!-- Отладка количества комментариев -->
-            <p>Debug: Number of comments = <span th:text="${post.comments.size()}"></span></p>
         </td>
     </tr>
     <!-- Комментарии -->
@@ -115,6 +109,7 @@
         <td>
             <!-- Форма для удаления комментария -->
             <form method="POST" th:action="@{/comments/{id}/delete(id=${comment.getId()})}">
+                <input type="hidden" name="postId" th:value="${post.id}">
                 <button style="float:right;">✗</button>
             </form>
         </td>

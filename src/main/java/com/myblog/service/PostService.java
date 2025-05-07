@@ -37,4 +37,7 @@ public class PostService {
     public void likePost(Long id) {
         postDao.incrementLikes(id);
     }
+    public void disLikePost(Long id) {
+        postDao.decrementLikes(id);
+    }
 }

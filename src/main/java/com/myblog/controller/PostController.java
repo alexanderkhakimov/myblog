@@ -132,8 +132,12 @@ public class PostController {
     }
 
     @PostMapping("/{id}/like")
-    public String likePost(@PathVariable(name = "id") Long id) {
-        postService.likePost(id);
+    public String likePost(@PathVariable(name = "id") Long id, @RequestParam(name = "like")boolean like) {
+        if (like) {
+            postService.likePost(id);
+        } else {
+            postService.disLikePost(id);
+        }
         return "redirect:/posts/" + id;
     }
 
@@ -141,5 +145,10 @@ public class PostController {
     public String deletePost(@PathVariable(name = "id") Long id) {
         postService.deletePost(id);
         return "redirect:/posts";
+    }
+
+    @GetMapping("/{id}/edit")
+    public  String editPost(@PathVariable(name = "id") Long id){
+        return "redirect:/posts/" + id;
     }
 }

@@ -8,7 +8,12 @@ import java.util.List;
 @Repository
 public interface CommentDao {
     List<Comment> findByPostId(Long postId);
+
+    Comment findById(Long id);
+
     void save(Comment comment);
+
     void update(Comment comment);
+
     void delete(Long id);
 }
