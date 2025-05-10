@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class Post {
@@ -15,4 +16,10 @@ public class Post {
     private LocalDateTime createdAt;
     private List<Comment> comments;
     private List<Tag> tags;
+
+    public String getTagsAsText() {
+        return tags == null || tags.isEmpty() ? "" : tags.stream()
+                .map(Tag::getName)
+                .collect(Collectors.joining(","));
+    }
 }

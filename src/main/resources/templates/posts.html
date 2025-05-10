@@ -39,7 +39,9 @@
     </tr>
     <tr th:each="post : ${posts}">
         <td style="border-bottom:thin solid;">
-            <h2 th:text="${post.title}"></h2>
+            <a th:href="@{/posts/{id}(id=${post.id})}">
+                <h2 th:text="${post.title}"></h2>
+            </a>
             <p>
                 <a th:href="@{/posts/{id}(id=${post.id})}">
                     <img height="300" th:src="@{${post.imageUrl} ?: '/static/images/placeholder.jpg'}">

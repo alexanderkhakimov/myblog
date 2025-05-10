@@ -10,12 +10,12 @@
     <b>НА ГЛАВНУЮ ⤵</b>
 </a>
 <div th:if="${error}" th:text="${error}" style="color: red; text-align: center;"></div>
-<form method="POST" th:action="@{/posts}" enctype="multipart/form-data">
+<form method="POST" th:action="${post==null || post.getId==null} ? @{/posts} : @{/posts/{id}/edit(id=${post.id})}" enctype="multipart/form-data">
     <table style="width:50%;margin-left:auto;margin-right:auto;">
         <tr>
             <td>
                 <h3>Название</h3>
-                <textarea rows="2" style="width: 100%;" name="title"></textarea>
+                <textarea rows="2" style="width: 100%;" name="title" th:text="${post==null || post.getId==null ? '' : post.getTitle()}"></textarea>
             </td>
         </tr>
         <tr>
@@ -27,18 +27,18 @@
         <tr>
             <td>
                 <h3>Теги</h3>
-                <textarea rows="2" style="width: 100%;" name="tags"></textarea>
+                <textarea rows="2" style="width: 100%;" name="tags" th:text="${post.getTags() != null ? post.getTagsAsText() : ''}"></textarea>
             </td>
         </tr>
         <tr>
             <td>
                 <h3>Текст</h3>
-                <textarea rows="30" style="width: 100%;" name="text"></textarea>
+                <textarea rows="30" style="width: 100%;" name="text" th:text="${post==null || post.getId==null ? '' : post.getContent()}"></textarea>
             </td>
         </tr>
         <tr>
             <td>
-                <button style="float:right;" th:text="'Сохранить'"></button>
+                <button style="float:right;" th:text="${post==null || post.getId==null ? 'Сохранить' : 'Редактировать'}"></button>
             </td>
         </tr>
     </table>

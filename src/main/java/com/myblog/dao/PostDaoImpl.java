@@ -77,7 +77,7 @@ public class PostDaoImpl implements PostDao {
         String sql = "INSERT INTO posts (title, image_url, content, created_at) VALUES (?, ?, ?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, post.getTitle());
             ps.setString(2, post.getImageUrl());
             ps.setString(3, post.getContent());

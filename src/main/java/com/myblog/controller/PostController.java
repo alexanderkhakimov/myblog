@@ -1,19 +1,11 @@
 package com.myblog.controller;
 
 import com.myblog.model.Post;
-import com.myblog.model.Tag;
 import com.myblog.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/posts")
@@ -63,76 +55,40 @@ public class PostController {
             Model model
     ) {
         Post post = new Post();
-        try {
-            // Валидация вручную
-            if (title == null || title.trim().isEmpty()) {
-                model.addAttribute("error", "Title is required");
-                model.addAttribute("post", post);
-                return "add-post";
-            }
-            if (text == null || text.trim().isEmpty()) {
-                model.addAttribute("error", "Content is required");
-                model.addAttribute("post", post);
-                return "add-post";
-            }
-            post.setTitle(title);
-            post.setContent(text);
-            if (tags != null && !tags.trim().isEmpty()) {
-                String[] tagArray = tags.trim().split("\\s*,\\s*");
-                List<Tag> tagList = Arrays.stream(tagArray)
-                        .filter(tag -> !tag.isEmpty())
-                        .map(name -> {
-                            Tag tag = new Tag();
-                            tag.setName(name);
-                            return tag;
-                        })
-                        .collect(Collectors.toList());
-                if (tagList.stream().anyMatch(tag -> tag.getName().length() > 50)) {
-                    model.addAttribute("error", "Each tag must be 50 characters or less");
-                    model.addAttribute("post", post);
-                    return "add-post";
-                }
-                post.setTags(tagList);
-            } else {
-                post.setTags(new ArrayList<>());
-            }
-            if (image != null && !image.isEmpty()) {
-                String contentType = image.getContentType();
-                if (contentType == null || !contentType.startsWith("image/")) {
-                    model.addAttribute("error", "Only image files are allowed");
-                    model.addAttribute("post", post);
-                    return "add-post";
-                }
-                String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
-                String uploadDir = "C:/Program Files/Apache Software Foundation/Tomcat 11.0/webapps/myblog/static/uploads/";
-                File uploadDirFile = new File(uploadDir);
-                if (!uploadDirFile.exists()) {
-                    boolean created = uploadDirFile.mkdirs();
-                    if (!created) {
-                        model.addAttribute("error", "Failed to create upload directory");
-                        model.addAttribute("post", post);
-                        return "add-post";
-                    }
-                }
-                File destinationFile = new File(uploadDir + fileName);
-                image.transferTo(destinationFile);
-                post.setImageUrl("/static/uploads/" + fileName);
-            }
-            postService.savePost(post);
-            return "redirect:/posts";
-        } catch (IOException e) {
-            model.addAttribute("error", "Failed to upload image: " + e.getMessage());
+        String result = postService.processPost(post, title, text, tags, image, model);
+        if (result != null) {
             model.addAttribute("post", post);
-            return "add-post";
-        } catch (Exception e) {
-            model.addAttribute("error", "Failed to save post: " + e.getMessage());
-            model.addAttribute("post", post);
-            return "add-post";
+            model.addAttribute("error", result);
+            return result; // Возвращает "add-post" с ошибкой
         }
+        postService.savePost(post);
+        return "redirect:/posts";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String updatePost(
+            @PathVariable(name = "id") Long id,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "text", required = false) String text,
+            @RequestParam(value = "tags", required = false) String tags,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            Model model
+    ) {
+        Post post = postService.getPostById(id);
+        if (post == null) {
+            model.addAttribute("error", "Post not found");
+            return "redirect:/posts";
+        }
+        String result = postService.processPost(post, title, text, tags, image, model);
+        if (result != null) {
+            return result; // Возвращает "add-post" с ошибкой
+        }
+        postService.updatePost(post);
+        return "redirect:/posts";
     }
 
     @PostMapping("/{id}/like")
-    public String likePost(@PathVariable(name = "id") Long id, @RequestParam(name = "like")boolean like) {
+    public String likePost(@PathVariable(name = "id") Long id, @RequestParam(name = "like") boolean like) {
         if (like) {
             postService.likePost(id);
         } else {
@@ -148,7 +104,10 @@ public class PostController {
     }
 
     @GetMapping("/{id}/edit")
-    public  String editPost(@PathVariable(name = "id") Long id){
-        return "redirect:/posts/" + id;
+    public String editPost(@PathVariable(name = "id") Long id, Model model) {
+        Post post = postService.getPostById(id);
+        model.addAttribute(post);
+        return "add-post";
     }
+
 }
