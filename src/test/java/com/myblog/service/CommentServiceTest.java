@@ -27,18 +27,15 @@ public class CommentServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Создаем тестовый пост
         testPost = new Post();
         testPost.setTitle("Тестовый пост");
         testPost.setContent("Это контент тестового поста.");
 
         postService.savePost(testPost);
-        // Создаем тестовый комментарий и связываем с постом
         testComment = new Comment();
         testComment.setContent("Это тестовый комментарий.");
         testComment.setPostId(testPost.getId());
         commentService.saveComment(testComment);
-
     }
 
     @Test

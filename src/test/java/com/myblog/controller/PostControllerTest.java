@@ -1,5 +1,6 @@
 package com.myblog.controller;
 
+import com.myblog.config.ThymeleafTestConfig;
 import com.myblog.model.Post;
 import com.myblog.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,16 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.*;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.spring6.view.ThymeleafViewResolver;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -31,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = ThymeleafTestConfig.class)
 public class PostControllerTest {
     private MockMvc mockMvc;
     @Mock
@@ -42,26 +38,7 @@ public class PostControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Настраиваем Thymeleaf
-        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix("templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCharacterEncoding("UTF-8");
-
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-
-        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-        viewResolver.setTemplateEngine(templateEngine);
-        viewResolver.setCharacterEncoding("UTF-8");
-
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(postController)
-                .setViewResolvers(viewResolver)
-                .build();
-
-
+        mockMvc=ThymeleafTestConfig.buildMockMvc(postController);
         testPost = new Post();
         testPost.setId(1L);
         testPost.setTitle("Тестовый пост");

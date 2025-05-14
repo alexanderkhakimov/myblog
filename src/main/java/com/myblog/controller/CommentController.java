@@ -15,7 +15,7 @@ public class CommentController {
     }
 
     @PostMapping
-    public String addComment(@RequestParam("postId") Long postId, @RequestParam("text") String text) {
+    public String addComment(@RequestParam("postId") Long postId, @RequestParam(name = "text",required = false) String text) {
         if (text == null || text.trim().isEmpty()) {
             return "redirect:/posts/" + postId + "?error=Comment content cannot be empty";
         }
