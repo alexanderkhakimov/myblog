@@ -1,6 +1,5 @@
 package com.myblog.controller;
 
-import com.myblog.config.ThymeleafTestConfig;
 import com.myblog.model.Post;
 import com.myblog.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +8,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.*;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,20 +28,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = ThymeleafTestConfig.class)
+@WebMvcTest(PostController.class)
 public class PostControllerTest {
+    @Autowired
     private MockMvc mockMvc;
-    @Mock
+    @MockitoBean
     private PostService postService;
 
-    @InjectMocks
-    private PostController postController;
     private Post testPost;
 
     @BeforeEach
     void setUp() {
-        mockMvc=ThymeleafTestConfig.buildMockMvc(postController);
         testPost = new Post();
         testPost.setId(1L);
         testPost.setTitle("Тестовый пост");

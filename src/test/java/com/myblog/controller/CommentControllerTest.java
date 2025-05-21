@@ -1,18 +1,17 @@
 package com.myblog.controller;
 
 
-import com.myblog.config.ThymeleafTestConfig;
 import com.myblog.model.Comment;
 import com.myblog.service.CommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -21,16 +20,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = ThymeleafTestConfig.class)
+@WebMvcTest(CommentController.class)
 public class CommentControllerTest {
-
+    @Autowired
     private MockMvc mockMvc;
-    @Mock
+    @MockitoBean
     private CommentService commentService;
-
-    @InjectMocks
-    private CommentController commentController;
 
     private Comment testComment;
 
@@ -41,7 +36,6 @@ public class CommentControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = ThymeleafTestConfig.buildMockMvc(commentController);
         testComment = new Comment();
         testComment.setId(COMMENT_ID);
         testComment.setPostId(POST_ID);

@@ -1,15 +1,17 @@
 package com.myblog.service;
 
-import com.myblog.config.TestDataSourceConfig;
 import com.myblog.model.Post;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(classes = {AppConfig.class, TestDataSourceConfig.class})
+
+@SpringBootTest
 public class PostServiceTest {
     @Autowired
     private PostService postService;
