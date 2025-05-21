@@ -6,6 +6,10 @@
 target/
 *.log
 
+# Gradle
+build/
+gradle/
+
 # MacOS
 .DS_Store
 
