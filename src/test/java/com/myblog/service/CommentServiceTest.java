@@ -1,6 +1,5 @@
 package com.myblog.service;
 
-import com.myblog.config.AppConfig;
 import com.myblog.config.TestDataSourceConfig;
 import com.myblog.model.Comment;
 import com.myblog.model.Post;
